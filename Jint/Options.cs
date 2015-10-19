@@ -20,14 +20,24 @@ namespace Jint
         private int _maxRecursionDepth = -1; 
         private TimeSpan _timeoutInterval;
         private CultureInfo _culture = CultureInfo.CurrentCulture;
+#if !__CF__
         private TimeZoneInfo _localTimeZone = TimeZoneInfo.Local;
+#endif
         private List<Assembly> _lookupAssemblies = new List<Assembly>(); 
 
         /// <summary>
         /// When called, doesn't initialize the global scope.
         /// Can be useful in lightweight scripts for performance reason.
         /// </summary>
+#if __CF__
+        public Options DiscardGlobal() 
+        { 
+            return DiscardGlobal(true);
+        }
+        public Options DiscardGlobal(bool discard)
+#else
         public Options DiscardGlobal(bool discard = true)
+#endif
         {
             _discardGlobal = discard;
             return this;
@@ -36,7 +46,15 @@ namespace Jint
         /// <summary>
         /// Run the script in strict mode.
         /// </summary>
+#if __CF__
+        public Options Strict()
+        {
+            return Strict(true);
+        }
+        public Options Strict(bool strict)
+#else
         public Options Strict(bool strict = true)
+#endif
         {
             _strict = strict;
             return this;
@@ -49,7 +67,15 @@ namespace Jint
         /// Because the <code>debugger</code> statement can start the 
         /// Visual Studio debugger, is it disabled by default
         /// </remarks>
+#if __CF__
+        public Options AllowDebuggerStatement()
+        {
+            return AllowDebuggerStatement(true);
+        }
+        public Options AllowDebuggerStatement(bool allowDebuggerStatement)
+#else
         public Options AllowDebuggerStatement(bool allowDebuggerStatement = true)
+#endif
         {
             _allowDebuggerStatement = allowDebuggerStatement;
             return this;
@@ -58,7 +84,15 @@ namespace Jint
         /// <summary>
         /// Allow to run the script in debug mode.
         /// </summary>
+#if __CF__
+        public Options DebugMode()
+        {
+            return DebugMode(true);
+        }
+        public Options DebugMode(bool debugMode)
+#else
         public Options DebugMode(bool debugMode = true)
+#endif
         {
             _debugMode = debugMode;
             return this;
@@ -84,7 +118,15 @@ namespace Jint
             return this;
         }
 
+#if __CF__
+        public Options MaxStatements()
+        {
+            return MaxStatements(0);
+        }
+        public Options MaxStatements(int maxStatements)
+#else
         public Options MaxStatements(int maxStatements = 0)
+#endif
         {
             _maxStatements = maxStatements;
             return this;
@@ -105,7 +147,15 @@ namespace Jint
         /// b) In case max depth is equal to n it means that in one scope function can be called no more than n times.
         /// </param>
         /// <returns>Options instance for fluent syntax</returns>
+#if __CF__
+        public Options LimitRecursion()
+        {
+            return LimitRecursion(0);
+        }
+        public Options LimitRecursion(int maxRecursionDepth)
+#else
         public Options LimitRecursion(int maxRecursionDepth = 0)
+#endif
         {
             _maxRecursionDepth = maxRecursionDepth;
             return this;
@@ -116,12 +166,14 @@ namespace Jint
             _culture = cultureInfo;
             return this;
         }
-
+        
+#if !__CF__
         public Options LocalTimeZone(TimeZoneInfo timeZoneInfo)
         {
             _localTimeZone = timeZoneInfo;
             return this;
         }
+#endif
 
         internal bool GetDiscardGlobal()
         {
@@ -178,9 +230,16 @@ namespace Jint
             return _culture;
         }
 
+#if __CF__
+        internal TimeZone GetLocalTimeZone()
+        {
+            return TimeZone.CurrentTimeZone;
+        }
+#else
         internal TimeZoneInfo GetLocalTimeZone()
         {
             return _localTimeZone;
         }
+#endif
     }
 }

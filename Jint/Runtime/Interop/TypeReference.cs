@@ -142,8 +142,13 @@ namespace Jint.Runtime.Interop
 
             if (Type.IsEnum)
             {
+#if __CF__
+                Array enumValues = Type.GetEnumValues();
+                Array enumNames = Type.GetEnumNames();
+#else
                 Array enumValues = Enum.GetValues(Type);
                 Array enumNames = Enum.GetNames(Type);
+#endif
 
                 for (int i = 0; i < enumValues.Length; i++)
                 {
@@ -171,6 +176,10 @@ namespace Jint.Runtime.Interop
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .Where(mi => mi.Name == propertyName)
                 .ToArray();
+
+#if __CF__
+            methodInfo = methodInfo.Where(m => !m.IsGenericMethod).ToArray(); // TODO FS: Compact Framework does not support GetParameter() on Generic Methods
+#endif
 
             if (methodInfo.Length == 0)
             {

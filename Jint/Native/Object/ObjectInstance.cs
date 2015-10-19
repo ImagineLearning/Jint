@@ -479,21 +479,39 @@ namespace Jint.Native.Object
 
                     if (current.IsDataDescriptor())
                     {
+#if __CF__
+                        SetOwnProperty(propertyName,current = new PropertyDescriptor(
+                            Undefined.Instance,
+                            Undefined.Instance,
+                            current.Enumerable,
+                            current.Configurable
+                            ));
+#else
                         SetOwnProperty(propertyName, current = new PropertyDescriptor(
                             get: Undefined.Instance,
                             set: Undefined.Instance,
                             enumerable: current.Enumerable,
                             configurable: current.Configurable
                             ));
+#endif
                     }
                     else
                     {
+#if __CF__
+                        SetOwnProperty(propertyName,current = new PropertyDescriptor(
+                            Undefined.Instance,
+                            null,
+                            current.Enumerable,
+                            current.Configurable
+                            ));
+#else
                         SetOwnProperty(propertyName, current = new PropertyDescriptor(
                             value: Undefined.Instance, 
                             writable: null,
                             enumerable: current.Enumerable,
                             configurable: current.Configurable
                             ));
+#endif
                     }
                 }
                 else if (current.IsDataDescriptor() && desc.IsDataDescriptor())

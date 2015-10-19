@@ -11,7 +11,13 @@ namespace Jint
         [ThreadStatic] 
         private static int _refCount;
 
+#if __CF__
+        public EvalCodeScope() : this(true, false) { }
+        public EvalCodeScope(bool eval) : this(true, false) { }
+        public EvalCodeScope(bool eval, bool force)
+#else
         public EvalCodeScope(bool eval = true, bool force = false)
+#endif
         {
             _eval = eval;
             _force = force;

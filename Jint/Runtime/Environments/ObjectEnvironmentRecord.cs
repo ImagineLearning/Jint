@@ -32,7 +32,15 @@ namespace Jint.Runtime.Environments
         /// </summary>
         /// <param name="name"></param>
         /// <param name="configurable"></param>
+#if __CF__
+        public override void CreateMutableBinding(string name)
+        {
+            CreateMutableBinding(name, true);
+        }
+        public override void CreateMutableBinding(string name, bool configurable)
+#else
         public override void CreateMutableBinding(string name, bool configurable = true)
+#endif
         {
             _bindingObject.DefineOwnProperty(name, new PropertyDescriptor(Undefined.Instance, true, true, configurable), true);
         }

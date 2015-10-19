@@ -461,7 +461,11 @@ namespace Jint.Native.Number.Dtoa
         // computed.
         private static bool Grisu3(double v, FastDtoaBuilder buffer)
         {
+#if __CF__
+            long bits = BitConverter.ToInt64(BitConverter.GetBytes(v), 0);
+#else
             long bits = BitConverter.DoubleToInt64Bits(v);
+#endif
             DiyFp w = DoubleHelper.AsNormalizedDiyFp(bits);
             // boundary_minus and boundary_plus are the boundaries between v and its
             // closest floating-point neighbors. Any number strictly between

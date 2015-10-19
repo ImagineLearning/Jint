@@ -56,8 +56,13 @@ namespace Jint.Native.Math
             FastAddProperty("E", System.Math.E, false, false, false);
             FastAddProperty("LN10", System.Math.Log(10), false, false, false);
             FastAddProperty("LN2", System.Math.Log(2), false, false, false);
+#if __CF__
+            FastAddProperty("LOG2E", System.Math.Log(2), false, false, false);
+            FastAddProperty("LOG10E", System.Math.Log10(10), false, false, false);
+#else
             FastAddProperty("LOG2E", System.Math.Log(System.Math.E, 2), false, false, false);
             FastAddProperty("LOG10E", System.Math.Log(System.Math.E, 10), false, false, false);
+#endif
             FastAddProperty("PI", System.Math.PI, false, false, false);
             FastAddProperty("SQRT1_2", System.Math.Sqrt(0.5), false, false, false);
             FastAddProperty("SQRT2", System.Math.Sqrt(2), false, false, false);

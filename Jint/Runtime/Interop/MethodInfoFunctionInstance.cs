@@ -74,6 +74,15 @@ namespace Jint.Runtime.Interop
                         if (lambdaExpression != null)
                         {
                             parameters[i] = lambdaExpression.Compile();
+
+#if __CF__
+                            var isEventHandler = !(parameterType.Name.StartsWith("Func") || parameterType.Name.StartsWith("Action"));
+                            if (isEventHandler)
+                            {
+                                var eventHandler = (Delegate)parameters[i];
+                                parameters[i] = Delegate.CreateDelegate(parameterType, eventHandler.Target, eventHandler.Method);
+                            }
+#endif
                         }
                     }
                 }

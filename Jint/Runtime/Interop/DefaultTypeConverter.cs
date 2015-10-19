@@ -72,7 +72,8 @@ namespace Jint.Runtime.Interop
                         {
                             @params[i] = Expression.Parameter(genericArguments[i], genericArguments[i].Name + i);
                         }
-                        var tmpVars = new Expression[@params.Length];
+
+                        var tmpVars = new System.Linq.Expressions.Expression[@params.Length]; // .NET 3.5 compatibility: added full namespace because of namespace conflicts
                         for (var i = 0; i < @params.Count(); i++)
                         {
                             var param = @params[i];
@@ -95,7 +96,8 @@ namespace Jint.Runtime.Interop
                                                     @vars),
                                                 jsValueToObject), Expression.Empty());
 
-                        return Expression.Lambda(callExpresion, new ReadOnlyCollection<ParameterExpression>(@params));
+                        return Expression.Lambda(Expression.GetActionType(genericArguments), callExpresion, @params);  // .NET 3.5 compatibility: added type parameter AND removed ReadOnlyCollection<> maybe also push change to MASTER
+
                     }
                     else if (genericType.Name.StartsWith("Func"))
                     {
@@ -113,7 +115,7 @@ namespace Jint.Runtime.Interop
                                 @params.Select(p => {
                                     var boxingExpression = Expression.Convert(p, typeof(object));
                                     return Expression.Call(null, jsValueFromObject, Expression.Constant(_engine, typeof(Engine)), boxingExpression);
-                                })
+                                }).ToArray() /* .NET 3.5 compatibility: added .ToArray() */
                             );
 
                         // the final result's type needs to be changed before casting,
@@ -133,7 +135,7 @@ namespace Jint.Runtime.Interop
                                                         ),                            
                                                     returnType);
 
-                        return Expression.Lambda(callExpresion, new ReadOnlyCollection<ParameterExpression>(@params));
+                        return Expression.Lambda(callExpresion, @params);  // .NET 3.5 compatibility: removed ReadOnlyCollection<> maybe also push change to MASTER
                     }
                 }
                 else
@@ -152,7 +154,7 @@ namespace Jint.Runtime.Interop
                         {
                             @params[i] = Expression.Parameter(typeof(object), arguments[i].Name);
                         }
-                        var @vars = Expression.NewArrayInit(typeof(JsValue), @params.Select(p => Expression.Call(null, typeof(JsValue).GetMethod("FromObject"), Expression.Constant(_engine, typeof(Engine)), p)));
+                        var @vars = Expression.NewArrayInit(typeof(JsValue), @params.Select(p => Expression.Call(null, jsValueFromObject, Expression.Constant(_engine, typeof(Engine)), p)).ToArray());  // .NET 3.5 compatibility: added .ToArray()
 
                         var callExpression = Expression.Block(
                                                 Expression.Call(
@@ -160,15 +162,14 @@ namespace Jint.Runtime.Interop
                                                         function.Method,
                                                         Expression.Constant(JsValue.Undefined, typeof(JsValue)),
                                                         @vars),
-                                                    typeof(JsValue).GetMethod("ToObject")),
+                                                    jsValueToObject),
                                                 Expression.Empty());
 
-                        var dynamicExpression = Expression.Invoke(Expression.Lambda(callExpression, new ReadOnlyCollection<ParameterExpression>(@params)), new ReadOnlyCollection<ParameterExpression>(@params));
+                        var dynamicExpression = Expression.Invoke(Expression.Lambda(callExpression, @params), @params);
 
-                        return Expression.Lambda(type, dynamicExpression, new ReadOnlyCollection<ParameterExpression>(@params));
+                        return Expression.Lambda(type, dynamicExpression, @params); // .NET 3.5 compatibility: removed ReadOnlyCollection<> maybe also push change to MASTER
                     }
                 }
-
             }
 
             if (type.IsArray)
@@ -222,6 +223,25 @@ namespace Jint.Runtime.Interop
 
             converted = null;
             return false;
+        }
+
+
+        /// <summary>
+        /// This custom Expression class extends the base class in .NET 3.5 so ExpressionEmpty and ExpressionBlock are simulated for no code change in DefaultTypeConverter for better interoptability with the .NET 4.X version.
+        /// </summary>
+        protected class Expression : System.Linq.Expressions.Expression
+        {
+            protected Expression(ExpressionType expressionType, Type type) : base(expressionType, type) { }
+            
+            public static System.Linq.Expressions.Expression Empty()
+            {
+                return null;
+            }
+
+            public static System.Linq.Expressions.MethodCallExpression Block(System.Linq.Expressions.Expression expression, System.Linq.Expressions.Expression parameter)
+            {
+                return expression as MethodCallExpression;
+            }
         }
     }
 }

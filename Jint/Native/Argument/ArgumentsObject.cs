@@ -67,8 +67,13 @@ namespace Jint.Native.Argument
             else
             {
                 var thrower = engine.Function.ThrowTypeError;
+#if __CF__
+                obj.DefineOwnProperty("caller", new PropertyDescriptor(thrower, thrower, false, false), false);
+                obj.DefineOwnProperty("callee", new PropertyDescriptor(thrower, thrower, false, false), false);
+#else
                 obj.DefineOwnProperty("caller", new PropertyDescriptor(get: thrower, set: thrower, enumerable:false, configurable:false), false);
                 obj.DefineOwnProperty("callee", new PropertyDescriptor(get: thrower, set: thrower, enumerable: false, configurable: false), false);
+#endif
             }
 
             return obj;
@@ -126,7 +131,11 @@ namespace Jint.Native.Argument
 
             if (ownDesc.IsDataDescriptor())
             {
+#if __CF__
+                var valueDesc = new PropertyDescriptor(value, null, null, null);
+#else
                 var valueDesc = new PropertyDescriptor(value: value, writable: null, enumerable: null, configurable: null);
+#endif
                 DefineOwnProperty(propertyName, valueDesc, throwOnError);
                 return;
             }

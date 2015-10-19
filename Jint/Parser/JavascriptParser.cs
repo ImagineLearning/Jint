@@ -2083,7 +2083,15 @@ namespace Jint.Parser
 
         // 11.1.5 Object Initialiser
 
+#if __CF__
+        private FunctionExpression ParsePropertyFunction(Identifier[] parameters)
+        {
+            return ParsePropertyFunction(parameters, null);
+        }
+        private FunctionExpression ParsePropertyFunction(Identifier[] parameters, Token first)
+#else
         private FunctionExpression ParsePropertyFunction(Identifier[] parameters, Token first = null)
+#endif
         {
             EnterVariableScope();
             EnterFunctionScope();

@@ -44,7 +44,11 @@ namespace Jint.Native.Array
 
             if (ownDesc.IsDataDescriptor())
             {
+#if __CF__
+                var valueDesc = new PropertyDescriptor(value, null, null, null);
+#else
                 var valueDesc = new PropertyDescriptor(value: value, writable: null, enumerable: null, configurable: null);
+#endif
                 DefineOwnProperty(propertyName, valueDesc, throwOnError);
                 return;
             }
@@ -174,7 +178,11 @@ namespace Jint.Native.Array
                 }
                 if (!newWritable)
                 {
+#if __CF__
+                    DefineOwnProperty("length", new PropertyDescriptor(null, false, null, null), false);
+#else
                     DefineOwnProperty("length", new PropertyDescriptor(value: null, writable: false, enumerable: null, configurable: null), false);
+#endif
                 }
                 return true;
             }

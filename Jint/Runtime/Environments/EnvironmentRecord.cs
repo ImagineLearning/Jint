@@ -25,7 +25,12 @@ namespace Jint.Runtime.Environments
         /// </summary>
         /// <param name="name">The identifier of the binding.</param>
         /// <param name="canBeDeleted"><c>true</c> if the binding may be subsequently deleted.</param>
+#if __CF__
+        public abstract void CreateMutableBinding(string name);
+        public abstract void CreateMutableBinding(string name, bool canBeDeleted);
+#else
         public abstract void CreateMutableBinding(string name, bool canBeDeleted = false);
+#endif
 
         /// <summary>
         /// Sets the value of an already existing mutable binding in an environment record. 

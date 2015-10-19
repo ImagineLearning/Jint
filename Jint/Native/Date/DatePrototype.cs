@@ -846,7 +846,11 @@ namespace Jint.Native.Date
         {
             get
             {
+#if __CF__
+                return Engine.Options.GetLocalTimeZone().BaseUtcOffset().TotalMilliseconds;
+#else
                 return Engine.Options.GetLocalTimeZone().BaseUtcOffset.TotalMilliseconds;
+#endif
             }
         }
 
@@ -876,6 +880,21 @@ namespace Jint.Native.Date
             return Engine.Options.GetLocalTimeZone().IsDaylightSavingTime(dateTime) ? MsPerHour : 0;
         }
 
+#if __CF__
+        public DateTime ToLocalTime(DateTime t)
+        {
+            if (t.Kind == DateTimeKind.Unspecified)
+            {
+                return t;
+            }
+
+            if (t.Kind == DateTimeKind.Local) return t; // TODO CF: Check .NET Full 3.5 offset 
+            return t.ToLocalTime();
+
+            var offset = Engine.Options.GetLocalTimeZone().BaseUtcOffset();
+            return new DateTime(t.Ticks + offset.Ticks, DateTimeKind.Local);
+        }
+#else
         public DateTimeOffset ToLocalTime(DateTime t)
         {
             if (t.Kind == DateTimeKind.Unspecified)
@@ -886,6 +905,7 @@ namespace Jint.Native.Date
             var offset = Engine.Options.GetLocalTimeZone().BaseUtcOffset;
             return new DateTimeOffset(t.Ticks + offset.Ticks, offset);
         }
+#endif
 
         public double LocalTime(double t)
         {

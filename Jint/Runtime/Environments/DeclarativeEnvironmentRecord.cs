@@ -23,7 +23,15 @@ namespace Jint.Runtime.Environments
             return _bindings.ContainsKey(name);
         }
 
+#if __CF__
+        public override void CreateMutableBinding(string name)
+        {
+            CreateMutableBinding(name, false);
+        }
+        public override void CreateMutableBinding(string name, bool canBeDeleted)
+#else
         public override void CreateMutableBinding(string name, bool canBeDeleted = false)
+#endif
         {
             _bindings.Add(name, new Binding
                 {

@@ -737,6 +737,15 @@ namespace Jint
                         var existingProp = go.GetProperty(fn);
                         if (existingProp.Configurable.Value)
                         {
+#if __CF__
+                            go.DefineOwnProperty(fn,
+                                                 new PropertyDescriptor(
+                                                     Undefined.Instance,
+                                                     true,
+                                                     true,
+                                                     configurableBindings
+                                                     ), true);
+#else
                             go.DefineOwnProperty(fn,
                                                  new PropertyDescriptor(
                                                      value: Undefined.Instance,
@@ -744,6 +753,7 @@ namespace Jint
                                                      enumerable: true,
                                                      configurable: configurableBindings
                                                      ), true);
+#endif
                         }
                         else
                         {

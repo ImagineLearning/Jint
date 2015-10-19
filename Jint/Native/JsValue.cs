@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Dynamic;
+//using System.Diagnostics.Contracts;
+//using System.Dynamic;
 using Jint.Native.Array;
 using Jint.Native.Boolean;
 using Jint.Native.Date;
@@ -171,8 +171,19 @@ namespace Jint.Native
             return _object as RegExpInstance;
         }
 
+#if __CF__
         [Pure]
-        public T TryCast<T>(Action<JsValue> fail = null) where T : class
+        public T TryCast<T>() where T : class
+        {
+            return TryCast<T>(null);
+        }
+
+        [Pure]
+        public T TryCast<T>(Action<JsValue> fail) where T : class
+#else
+        [Pure]
+        public T TryCast<T>(Action<JsValue> fail = null) where T: class
+#endif
         {
             if (IsObject())
             {
@@ -334,11 +345,12 @@ namespace Jint.Native
                     throw new ArgumentOutOfRangeException();
             }
 
+#if !__CF__
             if (value is DateTimeOffset)
             {
                 return engine.Date.Construct((DateTimeOffset)value);
             }
-
+#endif
             // if an ObjectInstance is passed directly, use it as is
             var instance = value as ObjectInstance;
             if (instance != null)
@@ -493,8 +505,8 @@ namespace Jint.Native
                             break;
 
                         case "Object":
-#if __IOS__
-                                IDictionary<string, object> o = new Dictionary<string, object>(); 
+#if __IOS__ || __NET35__
+                            IDictionary<string, object> o = new Dictionary<string, object>(); 
 #else
                             IDictionary<string, object> o = new ExpandoObject();
 #endif

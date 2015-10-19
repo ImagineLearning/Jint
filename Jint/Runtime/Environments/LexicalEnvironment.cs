@@ -50,7 +50,15 @@ namespace Jint.Runtime.Environments
             return GetIdentifierReference(lex.Outer, name, strict);
         }
 
+#if __CF__
+        public static LexicalEnvironment NewDeclarativeEnvironment(Engine engine)
+        {
+            return NewDeclarativeEnvironment(engine);
+        }
+        public static LexicalEnvironment NewDeclarativeEnvironment(Engine engine, LexicalEnvironment outer)
+#else
         public static LexicalEnvironment NewDeclarativeEnvironment(Engine engine, LexicalEnvironment outer = null)
+#endif
         {
             return new LexicalEnvironment(new DeclarativeEnvironmentRecord(engine), outer);
         }

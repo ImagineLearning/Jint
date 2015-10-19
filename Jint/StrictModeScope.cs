@@ -11,7 +11,13 @@ namespace Jint
         [ThreadStatic] 
         private static int _refCount;
 
+#if __CF__
+        public StrictModeScope() : this(true, false) { }
+        public StrictModeScope(bool strict) : this(strict, false) { }
+        public StrictModeScope(bool strict, bool force)
+#else
         public StrictModeScope(bool strict = true, bool force = false)
+#endif
         {
             _strict = strict;
             _force = force;

@@ -324,7 +324,7 @@ namespace Jint.Native.String
                 }
                 else
                 {
-                    segments = s.Split(new[] {sep}, StringSplitOptions.None).ToList();
+                    segments = s.Split(new string[] {sep}, StringSplitOptions.None).ToList();
                 }
 
                 for (int i = 0; i < segments.Count && i < limit; i++)

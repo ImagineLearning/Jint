@@ -552,7 +552,15 @@ namespace Jint.Runtime
             return x == y;
         }
 
+#if __CF__
+        public static JsValue Compare(JsValue x, JsValue y)
+        {
+            return Compare(x, y, true);
+        }
+        public static JsValue Compare(JsValue x, JsValue y, bool leftFirst)
+#else
         public static JsValue Compare(JsValue x, JsValue y, bool leftFirst = true)
+#endif
         {
             JsValue px, py;
             if (leftFirst)
@@ -668,7 +676,11 @@ namespace Jint.Runtime
                             );
                         }
 
+#if __CF__
+                        propDesc = new PropertyDescriptor(get, null, true, true); // TODO FS: CHECK IF CORRECT FUNCTION IS USED!
+#else
                         propDesc = new PropertyDescriptor(get: get, set: null, enumerable: true, configurable:true);
+#endif
                         break;
                     
                     case PropertyKind.Set:
@@ -690,7 +702,11 @@ namespace Jint.Runtime
                                 StrictModeScope.IsStrictModeCode
                                 );
                         }
+#if __CF__
+                        propDesc = new PropertyDescriptor(null, set, true, true); // TODO FS: CHECK IF CORRECT FUNCTION IS USED!
+#else
                         propDesc = new PropertyDescriptor(get:null, set: set, enumerable: true, configurable: true);
+#endif
                         break;
 
                     default:
@@ -796,7 +812,11 @@ namespace Jint.Runtime
             JsValue thisObject;
 
             // todo: implement as in http://www.ecma-international.org/ecma-262/5.1/#sec-11.2.4
+#if __CF__
+            var arguments = callExpression.Arguments.Select<Expression, object>(EvaluateExpression).Select<object, JsValue>(_engine.GetValue).ToArray();
+#else
             var arguments = callExpression.Arguments.Select(EvaluateExpression).Select(_engine.GetValue).ToArray();
+#endif
 
             var func = _engine.GetValue(callee);
             
@@ -932,7 +952,11 @@ namespace Jint.Runtime
 
         public JsValue EvaluateNewExpression(NewExpression newExpression)
         {
+#if __CF__
+            var arguments = newExpression.Arguments.Select<Expression, object>(EvaluateExpression).Select<object, JsValue>(_engine.GetValue).ToArray();
+#else
             var arguments = newExpression.Arguments.Select(EvaluateExpression).Select(_engine.GetValue).ToArray();
+#endif
             
             // todo: optimize by defining a common abstract class or interface
             var callee = _engine.GetValue(EvaluateExpression(newExpression.Callee)).TryCast<IConstructor>();

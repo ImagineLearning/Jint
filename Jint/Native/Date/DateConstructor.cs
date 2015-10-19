@@ -44,7 +44,11 @@ namespace Jint.Native.Date
             DateTime result;
             var date = TypeConverter.ToString(arguments.At(0));
 
+#if __CF__
+            if (!DateTime.Now.TryParseExact(date, new[]
+#else
             if (!DateTime.TryParseExact(date, new[]
+#endif
             {
                 "yyyy-MM-ddTHH:mm:ss.FFF",
                 "yyyy-MM-ddTHH:mm:ss",
@@ -54,7 +58,11 @@ namespace Jint.Native.Date
                 "yyyy"
             }, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out result))
             {
+#if __CF__
+                if (!DateTime.Now.TryParseExact(date, new[]
+#else
                 if (!DateTime.TryParseExact(date, new[]
+#endif          
                 {
                     // Formats used in DatePrototype toString methods
                     "ddd MMM dd yyyy HH:mm:ss 'GMT'K",
@@ -85,6 +93,16 @@ namespace Jint.Native.Date
                     "THHK"
                 }, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out result))
                 {
+#if __CF__
+                    if (!DateTime.Now.TryParse(date, Engine.Options.GetCulture(), DateTimeStyles.AdjustToUniversal, out result))
+                    {
+                        if (!DateTime.Now.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out result))
+                        {
+                            // unrecognized dates should return NaN (15.9.4.2)
+                            return double.NaN;
+                        }
+                    }
+#else
                     if (!DateTime.TryParse(date, Engine.Options.GetCulture(), DateTimeStyles.AdjustToUniversal, out result))
                     {
                         if (!DateTime.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out result))
@@ -93,6 +111,7 @@ namespace Jint.Native.Date
                             return double.NaN;
                         }
                     }
+#endif
                 }
             }
 
@@ -101,7 +120,11 @@ namespace Jint.Native.Date
 
         private JsValue Utc(JsValue thisObj, JsValue[] arguments)
         {
+#if __CF__
+            return TimeClip(ConstructTimeValue(arguments, true));
+#else
             return TimeClip(ConstructTimeValue(arguments, useUtc: true));
+#endif
         }
 
         private JsValue Now(JsValue thisObj, JsValue[] arguments)
@@ -137,7 +160,11 @@ namespace Jint.Native.Date
             }
             else
             {
+#if __CF__
+                return Construct(ConstructTimeValue(arguments, true));
+#else
                 return Construct(ConstructTimeValue(arguments, useUtc: false));
+#endif
             }
         }
 
@@ -177,10 +204,12 @@ namespace Jint.Native.Date
 
         public DatePrototype PrototypeObject { get; private set; }
 
+#if !__CF__ 
         public DateInstance Construct(DateTimeOffset value)
         {
             return Construct(value.UtcDateTime);
         }
+#endif
 
         public DateInstance Construct(DateTime value)
         {

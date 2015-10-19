@@ -1,0 +1,547 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7E116DE4-8ED0-4AE5-9B03-19ACE33CE3D4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jint</RootNamespace>
+    <AssemblyName>Jint.CF</AssemblyName>
+    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PlatformFamilyName>WindowsCE</PlatformFamilyName>
+    <PlatformID>E2BECB1F-8C8C-41ba-B736-9BE7D946A398</PlatformID>
+    <OSVersion>5.0</OSVersion>
+    <DeployDirSuffix>Jint</DeployDirSuffix>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <NativePlatformName>Windows CE</NativePlatformName>
+    <FormFactorID>
+    </FormFactorID>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WindowsCE,__CF__,__NET35__</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;__CF__,__NET35__</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CustomMarshalers" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Expressions, Version=8.0.249.16098, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\System.Linq.Expressions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Jint\DeclarationBindingType.cs">
+      <Link>DeclarationBindingType.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Engine.cs">
+      <Link>Engine.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\EvalCodeScope.cs">
+      <Link>EvalCodeScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Argument\ArgumentsObject.cs">
+      <Link>Native\Argument\ArgumentsObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Array\ArrayConstructor.cs">
+      <Link>Native\Array\ArrayConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Array\ArrayInstance.cs">
+      <Link>Native\Array\ArrayInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Array\ArrayPrototype.cs">
+      <Link>Native\Array\ArrayPrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Boolean\BooleanConstructor.cs">
+      <Link>Native\Boolean\BooleanConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Boolean\BooleanInstance.cs">
+      <Link>Native\Boolean\BooleanInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Boolean\BooleanPrototype.cs">
+      <Link>Native\Boolean\BooleanPrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Date\DateConstructor.cs">
+      <Link>Native\Date\DateConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Date\DateInstance.cs">
+      <Link>Native\Date\DateInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Date\DatePrototype.cs">
+      <Link>Native\Date\DatePrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Error\ErrorConstructor.cs">
+      <Link>Native\Error\ErrorConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Error\ErrorInstance.cs">
+      <Link>Native\Error\ErrorInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Error\ErrorPrototype.cs">
+      <Link>Native\Error\ErrorPrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Function\BindFunctionInstance.cs">
+      <Link>Native\Function\BindFunctionInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Function\EvalFunctionInstance.cs">
+      <Link>Native\Function\EvalFunctionInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Function\FunctionConstructor.cs">
+      <Link>Native\Function\FunctionConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Function\FunctionInstance.cs">
+      <Link>Native\Function\FunctionInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Function\FunctionPrototype.cs">
+      <Link>Native\Function\FunctionPrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Function\FunctionShim.cs">
+      <Link>Native\Function\FunctionShim.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Function\ScriptFunctionInstance.cs">
+      <Link>Native\Function\ScriptFunctionInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Function\ThrowTypeError.cs">
+      <Link>Native\Function\ThrowTypeError.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Global\GlobalObject.cs">
+      <Link>Native\Global\GlobalObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\ICallable.cs">
+      <Link>Native\ICallable.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\IConstructor.cs">
+      <Link>Native\IConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\IPrimitiveInstance.cs">
+      <Link>Native\IPrimitiveInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Json\JsonInstance.cs">
+      <Link>Native\Json\JsonInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Json\JsonParser.cs">
+      <Link>Native\Json\JsonParser.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Json\JsonSerializer.cs">
+      <Link>Native\Json\JsonSerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\JsValue.cs">
+      <Link>Native\JsValue.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Math\MathInstance.cs">
+      <Link>Native\Math\MathInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Null.cs">
+      <Link>Native\Null.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\Dtoa\CachePowers.cs">
+      <Link>Native\Number\Dtoa\CachePowers.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\Dtoa\DiyFp.cs">
+      <Link>Native\Number\Dtoa\DiyFp.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\Dtoa\DoubleHelper.cs">
+      <Link>Native\Number\Dtoa\DoubleHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\Dtoa\FastDtoa.cs">
+      <Link>Native\Number\Dtoa\FastDtoa.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\Dtoa\FastDtoaBuilder.cs">
+      <Link>Native\Number\Dtoa\FastDtoaBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\Dtoa\NumberExtensions.cs">
+      <Link>Native\Number\Dtoa\NumberExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\NumberConstructor.cs">
+      <Link>Native\Number\NumberConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\NumberInstance.cs">
+      <Link>Native\Number\NumberInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Number\NumberPrototype.cs">
+      <Link>Native\Number\NumberPrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Object\ObjectConstructor.cs">
+      <Link>Native\Object\ObjectConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Object\ObjectInstance.cs">
+      <Link>Native\Object\ObjectInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Object\ObjectPrototype.cs">
+      <Link>Native\Object\ObjectPrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\RegExp\RegExpConstructor.cs">
+      <Link>Native\RegExp\RegExpConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\RegExp\RegExpInstance.cs">
+      <Link>Native\RegExp\RegExpInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\RegExp\RegExpPrototype.cs">
+      <Link>Native\RegExp\RegExpPrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\String\StringConstructor.cs">
+      <Link>Native\String\StringConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\String\StringInstance.cs">
+      <Link>Native\String\StringInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\String\StringPrototype.cs">
+      <Link>Native\String\StringPrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Native\Undefined.cs">
+      <Link>Native\Undefined.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\NET35.cs">
+      <Link>NET35.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Options.cs">
+      <Link>Options.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ArrayExpression.cs">
+      <Link>Parser\Ast\ArrayExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\AssignmentExpression.cs">
+      <Link>Parser\Ast\AssignmentExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\BinaryExpression.cs">
+      <Link>Parser\Ast\BinaryExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\BlockStatement.cs">
+      <Link>Parser\Ast\BlockStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\BreakStatement.cs">
+      <Link>Parser\Ast\BreakStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\CallExpression.cs">
+      <Link>Parser\Ast\CallExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\CatchClause.cs">
+      <Link>Parser\Ast\CatchClause.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ConditionalExpression.cs">
+      <Link>Parser\Ast\ConditionalExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ContinueStatement.cs">
+      <Link>Parser\Ast\ContinueStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\DebuggerStatement.cs">
+      <Link>Parser\Ast\DebuggerStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\DoWhileStatement.cs">
+      <Link>Parser\Ast\DoWhileStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\EmptyStatement.cs">
+      <Link>Parser\Ast\EmptyStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\Expression.cs">
+      <Link>Parser\Ast\Expression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ExpressionStatement.cs">
+      <Link>Parser\Ast\ExpressionStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ForInStatement.cs">
+      <Link>Parser\Ast\ForInStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ForStatement.cs">
+      <Link>Parser\Ast\ForStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\FunctionDeclaration.cs">
+      <Link>Parser\Ast\FunctionDeclaration.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\FunctionExpression.cs">
+      <Link>Parser\Ast\FunctionExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\Identifier.cs">
+      <Link>Parser\Ast\Identifier.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\IfStatement.cs">
+      <Link>Parser\Ast\IfStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\IPropertyKeyExpression.cs">
+      <Link>Parser\Ast\IPropertyKeyExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\LabeledStatement.cs">
+      <Link>Parser\Ast\LabeledStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\Literal.cs">
+      <Link>Parser\Ast\Literal.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\LogicalExpression.cs">
+      <Link>Parser\Ast\LogicalExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\MemberExpression.cs">
+      <Link>Parser\Ast\MemberExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\NewExpression.cs">
+      <Link>Parser\Ast\NewExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ObjectExpression.cs">
+      <Link>Parser\Ast\ObjectExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\Program.cs">
+      <Link>Parser\Ast\Program.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\Property.cs">
+      <Link>Parser\Ast\Property.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\RegExpLiteral.cs">
+      <Link>Parser\Ast\RegExpLiteral.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ReturnStatement.cs">
+      <Link>Parser\Ast\ReturnStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\SequenceExpression.cs">
+      <Link>Parser\Ast\SequenceExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\Statement.cs">
+      <Link>Parser\Ast\Statement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\SwitchCase.cs">
+      <Link>Parser\Ast\SwitchCase.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\SwitchStatement.cs">
+      <Link>Parser\Ast\SwitchStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\SyntaxNode.cs">
+      <Link>Parser\Ast\SyntaxNode.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\SyntaxNodes.cs">
+      <Link>Parser\Ast\SyntaxNodes.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ThisExpression.cs">
+      <Link>Parser\Ast\ThisExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\ThrowStatement.cs">
+      <Link>Parser\Ast\ThrowStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\TryStatement.cs">
+      <Link>Parser\Ast\TryStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\UnaryExpression.cs">
+      <Link>Parser\Ast\UnaryExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\UpdateExpression.cs">
+      <Link>Parser\Ast\UpdateExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\VariableDeclaration.cs">
+      <Link>Parser\Ast\VariableDeclaration.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\VariableDeclarator.cs">
+      <Link>Parser\Ast\VariableDeclarator.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\WhileStatement.cs">
+      <Link>Parser\Ast\WhileStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Ast\WithStatement.cs">
+      <Link>Parser\Ast\WithStatement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Comment.cs">
+      <Link>Parser\Comment.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\IFunctionDeclaration.cs">
+      <Link>Parser\IFunctionDeclaration.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\IFunctionScope.cs">
+      <Link>Parser\IFunctionScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\IVariableScope.cs">
+      <Link>Parser\IVariableScope.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\JavascriptParser.cs">
+      <Link>Parser\JavascriptParser.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Loc.cs">
+      <Link>Parser\Loc.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Messages.cs">
+      <Link>Parser\Messages.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\ParserException.cs">
+      <Link>Parser\ParserException.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\ParserExtensions.cs">
+      <Link>Parser\ParserExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\ParserOptions.cs">
+      <Link>Parser\ParserOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Position.cs">
+      <Link>Parser\Position.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\State.cs">
+      <Link>Parser\State.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Parser\Token.cs">
+      <Link>Parser\Token.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Arguments.cs">
+      <Link>Runtime\Arguments.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\CallStack\CallStackElement.cs">
+      <Link>Runtime\CallStack\CallStackElement.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\CallStack\CallStackElementComparer.cs">
+      <Link>Runtime\CallStack\CallStackElementComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\CallStack\JintCallStack.cs">
+      <Link>Runtime\CallStack\JintCallStack.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Completion.cs">
+      <Link>Runtime\Completion.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Debugger\BreakPoint.cs">
+      <Link>Runtime\Debugger\BreakPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Debugger\DebugHandler.cs">
+      <Link>Runtime\Debugger\DebugHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Debugger\DebugInformation.cs">
+      <Link>Runtime\Debugger\DebugInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Debugger\StepMode.cs">
+      <Link>Runtime\Debugger\StepMode.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Descriptors\PropertyDescriptor.cs">
+      <Link>Runtime\Descriptors\PropertyDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Descriptors\Specialized\ClrAccessDescriptor.cs">
+      <Link>Runtime\Descriptors\Specialized\ClrAccessDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Descriptors\Specialized\FieldInfoDescriptor.cs">
+      <Link>Runtime\Descriptors\Specialized\FieldInfoDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Descriptors\Specialized\IndexDescriptor.cs">
+      <Link>Runtime\Descriptors\Specialized\IndexDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Descriptors\Specialized\PropertyInfoDescriptor.cs">
+      <Link>Runtime\Descriptors\Specialized\PropertyInfoDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Environments\Binding.cs">
+      <Link>Runtime\Environments\Binding.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Environments\DeclarativeEnvironmentRecord.cs">
+      <Link>Runtime\Environments\DeclarativeEnvironmentRecord.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Environments\EnvironmentRecord.cs">
+      <Link>Runtime\Environments\EnvironmentRecord.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Environments\ExecutionContext.cs">
+      <Link>Runtime\Environments\ExecutionContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Environments\LexicalEnvironment.cs">
+      <Link>Runtime\Environments\LexicalEnvironment.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Environments\ObjectEnvironmentRecord.cs">
+      <Link>Runtime\Environments\ObjectEnvironmentRecord.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\ExpressionIntepreter.cs">
+      <Link>Runtime\ExpressionIntepreter.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\ClrFunctionInstance.cs">
+      <Link>Runtime\Interop\ClrFunctionInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\DefaultTypeConverter.cs">
+      <Link>Runtime\Interop\DefaultTypeConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\DelegateWrapper.cs">
+      <Link>Runtime\Interop\DelegateWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\GetterFunctionInstance.cs">
+      <Link>Runtime\Interop\GetterFunctionInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\IObjectConverter.cs">
+      <Link>Runtime\Interop\IObjectConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\IObjectWrapper.cs">
+      <Link>Runtime\Interop\IObjectWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\ITypeConverter.cs">
+      <Link>Runtime\Interop\ITypeConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\MethodInfoFunctionInstance.cs">
+      <Link>Runtime\Interop\MethodInfoFunctionInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\NamespaceReference.cs">
+      <Link>Runtime\Interop\NamespaceReference.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\ObjectWrapper.cs">
+      <Link>Runtime\Interop\ObjectWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\SetterFunctionInstance.cs">
+      <Link>Runtime\Interop\SetterFunctionInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\TypeReference.cs">
+      <Link>Runtime\Interop\TypeReference.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\Interop\TypeReferencePrototype.cs">
+      <Link>Runtime\Interop\TypeReferencePrototype.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\JavaScriptException.cs">
+      <Link>Runtime\JavaScriptException.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\MruPropertyCache.cs">
+      <Link>Runtime\MruPropertyCache.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\MruPropertyCache2.cs">
+      <Link>Runtime\MruPropertyCache2.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\RecursionDepthOverflowException.cs">
+      <Link>Runtime\RecursionDepthOverflowException.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\References\Reference.cs">
+      <Link>Runtime\References\Reference.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\StatementInterpreter.cs">
+      <Link>Runtime\StatementInterpreter.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\StatementsCountOverflowException.cs">
+      <Link>Runtime\StatementsCountOverflowException.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\Runtime\TypeConverter.cs">
+      <Link>Runtime\TypeConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Jint\StrictModeScope.cs">
+      <Link>StrictModeScope.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
+        <HostingProcess disable="1" />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

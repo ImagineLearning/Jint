@@ -28,7 +28,15 @@ namespace Jint.Runtime
         /// <param name="input"></param>
         /// <param name="preferredType"></param>
         /// <returns></returns>
+#if __CF__
+        public static JsValue ToPrimitive(JsValue input)
+        {
+            return ToPrimitive(input, Types.None);
+        }
+        public static JsValue ToPrimitive(JsValue input, Types preferredType)
+#else
         public static JsValue ToPrimitive(JsValue input, Types preferredType = Types.None)
+#endif
         {
             if (input == Null.Instance || input == Undefined.Instance)
             {

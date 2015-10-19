@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRunConfiguration name="Desktop" id="52a4d867-40e7-47ed-8217-c3166d17e5f2" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+  <Description>This is the test run for running the tests on the Desktop</Description>
+  <Timeouts runTimeout="1800000" />
+  <TestTypeSpecific />
+</TestRunConfiguration>

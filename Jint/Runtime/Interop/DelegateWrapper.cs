@@ -91,7 +91,11 @@ namespace Jint.Runtime.Interop
                 parameters[paramsArgumentIndex] = paramsParameter;
             }
 
+#if __CF__
+            return JsValue.FromObject(Engine, _d.Method.Invoke(_d, parameters)); // TODO FS: CF does not support invoking delegates....
+#else
             return JsValue.FromObject(Engine, _d.DynamicInvoke(parameters));
+#endif
         }
     }
 }

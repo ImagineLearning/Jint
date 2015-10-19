@@ -123,9 +123,15 @@ namespace Jint.Native.RegExp
 
         private static Object.ObjectInstance InitReturnValueArray(Object.ObjectInstance array, string inputValue, int lengthValue, int indexValue)
         {
+#if __CF__
+            array.DefineOwnProperty("index", new PropertyDescriptor(indexValue, true, true, true), true);
+            array.DefineOwnProperty("input", new PropertyDescriptor(inputValue, true, true, true), true);
+            array.DefineOwnProperty("length", new PropertyDescriptor(lengthValue, false, false, false), true);
+#else
             array.DefineOwnProperty("index", new PropertyDescriptor(indexValue, writable: true, enumerable: true, configurable: true), true);
             array.DefineOwnProperty("input", new PropertyDescriptor(inputValue, writable: true, enumerable: true, configurable: true), true);
             array.DefineOwnProperty("length", new PropertyDescriptor(value: lengthValue, writable: false, enumerable: false, configurable: false), true);
+#endif
             return array;
         }
     }

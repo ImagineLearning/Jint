@@ -31,7 +31,13 @@ namespace Jint.Runtime.Descriptors
             }
         }
 
+#if __CF__
+        public PropertyDescriptor(JsValue? get, JsValue? set) : this(get, set, null, null) { }
+        public PropertyDescriptor(JsValue? get, JsValue? set, bool? enumerable) : this(get, set, null, null) { }
+        public PropertyDescriptor(JsValue? get, JsValue? set, bool? enumerable, bool? configurable)
+#else
         public PropertyDescriptor(JsValue? get, JsValue? set, bool? enumerable = null, bool? configurable = null)
+#endif
         {
             Get = get;
             Set = set;
@@ -172,17 +178,32 @@ namespace Jint.Runtime.Descriptors
 
             if (desc.IsDataDescriptor())
             {
+#if __CF__
+                obj.DefineOwnProperty("value", new PropertyDescriptor(desc.Value.HasValue ? desc.Value : Native.Undefined.Instance, true, true, true), false);
+                obj.DefineOwnProperty("writable", new PropertyDescriptor(desc.Writable.HasValue && desc.Writable.Value, true, true, true), false);
+#else
                 obj.DefineOwnProperty("value", new PropertyDescriptor(value: desc.Value.HasValue ? desc.Value : Native.Undefined.Instance, writable: true, enumerable: true, configurable: true ), false);
                 obj.DefineOwnProperty("writable", new PropertyDescriptor(value: desc.Writable.HasValue && desc.Writable.Value, writable: true, enumerable: true, configurable: true), false);
+#endif
             }
             else
             {
+#if __CF__
+                obj.DefineOwnProperty("get", new PropertyDescriptor(desc.Get ?? Native.Undefined.Instance, true, true, true), false);
+                obj.DefineOwnProperty("set", new PropertyDescriptor(desc.Set ?? Native.Undefined.Instance, true, true, true), false);
+#else
                 obj.DefineOwnProperty("get", new PropertyDescriptor(desc.Get ?? Native.Undefined.Instance, writable: true, enumerable: true, configurable: true ), false);
                 obj.DefineOwnProperty("set", new PropertyDescriptor(desc.Set ?? Native.Undefined.Instance, writable: true, enumerable: true, configurable: true), false);
+#endif
             }
 
+#if __CF__
+            obj.DefineOwnProperty("enumerable", new PropertyDescriptor(desc.Enumerable.HasValue && desc.Enumerable.Value, true, true, true), false);
+            obj.DefineOwnProperty("configurable", new PropertyDescriptor(desc.Configurable.HasValue && desc.Configurable.Value, true, true, true), false);
+#else
             obj.DefineOwnProperty("enumerable", new PropertyDescriptor(value: desc.Enumerable.HasValue && desc.Enumerable.Value, writable: true, enumerable: true, configurable: true), false);
             obj.DefineOwnProperty("configurable", new PropertyDescriptor(value: desc.Configurable.HasValue && desc.Configurable.Value, writable: true, enumerable: true, configurable: true), false);
+#endif
 
             return obj;
         }
