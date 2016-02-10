@@ -21,9 +21,10 @@ namespace Jint
         private TimeSpan _timeoutInterval;
         private CultureInfo _culture = CultureInfo.CurrentCulture;
 #if !__CF__
-        private TimeZoneInfo _localTimeZone = TimeZoneInfo.Local;
+	    private TimeZoneInfo _localTimeZone = TimeZoneInfo.CreateCustomTimeZone("Mountain Standard Time",
+		    TimeSpan.FromHours(-7), "Mountain Standard Time", "Mountain Standard Time");
 #endif
-        private List<Assembly> _lookupAssemblies = new List<Assembly>(); 
+		private List<Assembly> _lookupAssemblies = new List<Assembly>(); 
 
         /// <summary>
         /// When called, doesn't initialize the global scope.
