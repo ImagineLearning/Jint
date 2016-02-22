@@ -10,6 +10,11 @@
 
         public static readonly string Readonly = "Readonly";
 
+	    public static string StaticMethod(string arg)
+	    {
+		    return "argument passed was: " + arg;
+	    }
+
         static ClassWithStaticFields()
         {
             Setter = "Setter";

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jint.Native;
 using Jint.Native.Object;
 using Jint.Tests.Runtime.Converters;
@@ -177,7 +178,93 @@ namespace Jint.Tests.Runtime
             ");
         }
 
-        [Fact]
+		[Fact]
+		public void CanInvokeStaticMethods()
+		{
+			RunTest(@"
+				var domain = importNamespace('Jint.Tests.Runtime.Domain');
+				var statics = domain.ClassWithStaticFields;
+                assert(statics.StaticMethod('something') === 'argument passed was: something');
+            ");
+		}
+
+		[Fact]
+		public void CanInvokeExtensionMethodsAsStaticMethod()
+		{
+			var p = new Person
+			{
+				Name = "Mickey Mouse",
+				Age = 99
+			};
+
+			_engine.SetValue("p", p);
+
+			RunTest(@"
+				var domain = importNamespace('Jint.Tests.Runtime.Domain');
+                assert(domain.PersonExtensionMethods.GetNameAndAgeString(p) === 'Name: Mickey Mouse Age: 99');
+            ");
+		}
+
+		[Fact]
+		public void CanInvokeIEnumerableExtensionMethodsAsStatics()
+		{
+			var p1 = new Person
+			{
+				Name = "Mickey Mouse",
+				Age = 99
+			};
+
+			var p2 = new Person
+			{
+				Name = "Donald Duck",
+				Age = 50
+			};
+
+			var people = new List<Person>();
+			people.Add(p1);
+			people.Add(p2);
+			people.Count();
+			//people.Where()
+
+			var toList = typeof(Enumerable).GetMethod("Count");
+			var constructedToList = toList.MakeGenericMethod(typeof(Person));
+			var castList = constructedToList.Invoke(null, new[] { people });
+			var countMethodInfo = typeof (Enumerable).GetMethod("Count");
+			var count = countMethodInfo.Invoke(null, new []{people});
+
+			var intCount = (int)count;
+
+			_engine.SetValue("people", people);
+
+			RunTest(@"
+				var linqNs = importNamespace('System.Linq');
+				var domain = importNamespace('Jint.Tests.Runtime.Domain');
+				var enumerable = linqNs.Enumerable;
+				var countMethod = enumerable.Count(domain.Person);
+				var peopleCount = countMethod.Invoke(null, [people]);
+                assert(peopleCount === 2);
+            ");
+		}
+
+		[Fact]
+		public void CanInvokeExtensionMethodsOnObjectInstance()
+		{
+			var p = new Person
+			{
+				Name = "Mickey Mouse",
+				Age = 99
+			};
+
+			_engine.SetValue("p", p);
+
+			RunTest(@"
+				var domain = importNamespace('Jint.Tests.Runtime.Domain');
+				var extensions = domain.PersonExtensionMethods;
+                assert(p.GetNameAndAgeString() === 'Name: Mickey Mouse Age: 99');
+            ");
+		}
+
+		[Fact]
         public void CanInvokeObjectMethodsWithPascalCase()
         {
             var p = new Person
