@@ -139,7 +139,16 @@ namespace Jint.Runtime.Interop
                 return new IndexDescriptor(Engine, explicitIndexers[0].DeclaringType, propertyName, Target);
             }
 
-            return PropertyDescriptor.Undefined;
+	        var extensionMethods = type.GetExtensionMethodsForType();
+
+			if (extensionMethods.Any())
+			{
+				var descriptor = new PropertyDescriptor(new MethodInfoFunctionInstance(Engine, extensionMethods), false, true, false);
+				Properties.Add(propertyName, descriptor);
+				return descriptor;
+			}
+
+			return PropertyDescriptor.Undefined;
         }
 
         private bool EqualsIgnoreCasing(string s1, string s2)
