@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Jint.Native;
 using Jint.Native.Array;
 using Jint.Native.Function;
@@ -28,7 +29,8 @@ namespace Jint.Runtime.Interop
 
         public JsValue Invoke(MethodInfo[] methodInfos, JsValue thisObject, JsValue[] jsArguments)
         {
-            var arguments = ProcessParamsArrays(jsArguments, methodInfos);
+	        var arguments = AddArgumentForExtensionMethods(jsArguments, methodInfos, thisObject);
+	        arguments = ProcessParamsArrays(arguments, methodInfos);
             var methods = TypeConverter.FindBestMatch(Engine, methodInfos, arguments).ToList();
             var converter = Engine.ClrTypeConverter;
 
@@ -102,12 +104,29 @@ namespace Jint.Runtime.Interop
                     continue;
                 }
 
-                // todo: cache method info
-                return JsValue.FromObject(Engine, method.Invoke(method.IsStatic ? null : thisObject.ToObject(), parameters.ToArray()));
+				// todo: cache method info
+				return JsValue.FromObject(Engine, method.Invoke(method.IsStatic ? null : thisObject.ToObject(), parameters.ToArray()));
             }
 
             throw new JavaScriptException(Engine.TypeError, "No public methods with the specified arguments were found.");
         }
+
+	    private JsValue[] AddArgumentForExtensionMethods(JsValue[] jsArguments, IEnumerable<MethodInfo> methodInfos,
+		    JsValue thisObject)
+	    {
+			if (methodInfos.All(method => method != null && method.GetCustomAttributes(true).Any(attr => attr is ExtensionAttribute)))
+			{
+				//If the caller of the extension method is an object then add the object as the first parameter for the extension method
+				//We don't want to add this as the first argument if they are calling the method statically and already passing the object in
+				if (thisObject.AsObject().Class == "Object")
+				{
+					var args = jsArguments.ToList();
+					args.Insert(0, thisObject);
+					jsArguments = args.ToArray();
+				}
+			}
+			return jsArguments;
+		}
 
         /// <summary>
         /// Reduces a flat list of parameters to a params array
@@ -117,7 +136,7 @@ namespace Jint.Runtime.Interop
             foreach (var methodInfo in methodInfos)
             {
                 var parameters = methodInfo.GetParameters();
-                if (!parameters.Any(p => Attribute.IsDefined(p, typeof(ParamArrayAttribute))))
+				if (!parameters.Any(p => Attribute.IsDefined(p, typeof(ParamArrayAttribute))))
                     continue;
 
                 var nonParamsArgumentsCount = parameters.Length - 1;

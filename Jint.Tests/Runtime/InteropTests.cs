@@ -260,12 +260,54 @@ namespace Jint.Tests.Runtime
 			RunTest(@"
 				var domain = importNamespace('Jint.Tests.Runtime.Domain');
 				var extensions = domain.PersonExtensionMethods;
-				var nameAndAge = p.GetNameAndAgeString(p);
+				var nameAndAge = p.GetNameAndAgeString();
                 assert(nameAndAge === 'Name: Mickey Mouse Age: 99');
             ");
 		}
 
 		[Fact]
+		public void CanInvokeExtensionMethodsWithMultipleParametersOnObjectInstance()
+		{
+			var p = new Person
+			{
+				Name = "Mickey Mouse",
+				Age = 99
+			};
+
+			_engine.SetValue("p", p);
+
+			RunTest(@"
+				var domain = importNamespace('Jint.Tests.Runtime.Domain');
+				var extensions = domain.PersonExtensionMethods;
+				p.SetNameAndAge(""Abed"", 22);
+                assert(p.Name === 'Abed');
+				assert(p.Age === 22);
+            ");
+		}
+
+	    [Fact]
+	    public void CanCallToArray()
+	    {
+		    var listOfStrings = new List<string> {"Troy", "and", "Abed"};
+		    var listOfPersons = new List<Person> {new Person(), new Person()};
+
+		    _engine.SetValue("l", listOfStrings);
+		    _engine.SetValue("p", listOfPersons);
+
+		    RunTest(@"
+				var myArray = l.ToArray();
+				assert(3 === myArray.length);
+
+				var myPersons = p.ToArray();
+				assert(2 === myPersons.length);
+
+				var testList = new (System.Collections.Generic.List(System.String))();
+				testList.Add(""bob"");
+				assert(1 === testList.ToArray().length);
+			");
+	    }
+
+	    [Fact]
         public void CanInvokeObjectMethodsWithPascalCase()
         {
             var p = new Person

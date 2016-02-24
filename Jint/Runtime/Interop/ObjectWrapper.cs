@@ -93,8 +93,19 @@ namespace Jint.Runtime.Interop
                 return descriptor;
             }
 
-            // if no methods are found check if target implemented indexing
-            if (type.GetProperties().Where(p => p.GetIndexParameters().Length != 0).FirstOrDefault() != null)
+	        var extensionMethods = type.GetExtensionMethodsForType()
+				.Where(m => EqualsIgnoreCasing(m.Name, propertyName))
+				.ToArray();
+
+			if (extensionMethods.Any())
+			{
+				var descriptor = new PropertyDescriptor(new MethodInfoFunctionInstance(Engine, extensionMethods), false, true, false);
+				Properties.Add(propertyName, descriptor);
+				return descriptor;
+			}
+
+			// if no methods are found check if target implemented indexing
+			if (type.GetProperties().Where(p => p.GetIndexParameters().Length != 0).FirstOrDefault() != null)
             {
                 return new IndexDescriptor(Engine, propertyName, Target);
             }
@@ -138,15 +149,6 @@ namespace Jint.Runtime.Interop
             {
                 return new IndexDescriptor(Engine, explicitIndexers[0].DeclaringType, propertyName, Target);
             }
-
-	        var extensionMethods = type.GetExtensionMethodsForType();
-
-			if (extensionMethods.Any())
-			{
-				var descriptor = new PropertyDescriptor(new MethodInfoFunctionInstance(Engine, extensionMethods), false, true, false);
-				Properties.Add(propertyName, descriptor);
-				return descriptor;
-			}
 
 			return PropertyDescriptor.Undefined;
         }
