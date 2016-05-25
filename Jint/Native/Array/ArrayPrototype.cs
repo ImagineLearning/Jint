@@ -44,14 +44,16 @@ namespace Jint.Native.Array
             FastAddProperty("slice", new ClrFunctionInstance(Engine, Slice, 2), true, false, true);
             FastAddProperty("sort", new ClrFunctionInstance(Engine, Sort, 1), true, false, true);
             FastAddProperty("splice", new ClrFunctionInstance(Engine, Splice, 2), true, false, true);
-            FastAddProperty("unshift", new ClrFunctionInstance(Engine, Unshift, 1), true, false, true);
+			FastAddProperty("ToArray", new ClrFunctionInstance(Engine, ToArray, 2), true, false, true);
+			FastAddProperty("unshift", new ClrFunctionInstance(Engine, Unshift, 1), true, false, true);
             FastAddProperty("indexOf", new ClrFunctionInstance(Engine, IndexOf, 1), true, false, true);
             FastAddProperty("lastIndexOf", new ClrFunctionInstance(Engine, LastIndexOf, 1), true, false, true);
             FastAddProperty("every", new ClrFunctionInstance(Engine, Every, 1), true, false, true);
             FastAddProperty("some", new ClrFunctionInstance(Engine, Some, 1), true, false, true);
             FastAddProperty("forEach", new ClrFunctionInstance(Engine, ForEach, 1), true, false, true);
             FastAddProperty("map", new ClrFunctionInstance(Engine, Map, 1), true, false, true);
-            FastAddProperty("filter", new ClrFunctionInstance(Engine, Filter, 1), true, false, true);
+			FastAddProperty("Select", new ClrFunctionInstance(Engine, Map, 1), true, false, true);
+			FastAddProperty("filter", new ClrFunctionInstance(Engine, Filter, 1), true, false, true);
             FastAddProperty("reduce", new ClrFunctionInstance(Engine, Reduce, 1), true, false, true);
             FastAddProperty("reduceRight", new ClrFunctionInstance(Engine, ReduceRight, 1), true, false, true);
         }
@@ -359,7 +361,12 @@ namespace Jint.Native.Array
             return -1;
         }
 
-        private JsValue Splice(JsValue thisObj, JsValue[] arguments)
+	    private JsValue ToArray(JsValue thisObj, JsValue[] arguments)
+	    {
+		    return thisObj;
+	    }
+
+	    private JsValue Splice(JsValue thisObj, JsValue[] arguments)
         {
             var start = arguments.At(0);
             var deleteCount = arguments.At(1);
