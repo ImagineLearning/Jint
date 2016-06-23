@@ -76,7 +76,16 @@ namespace Jint.Native.Date
             FastAddProperty("toUTCString", new ClrFunctionInstance(Engine, ToUtcString, 0), true, false, true);
             FastAddProperty("toISOString", new ClrFunctionInstance(Engine, ToISOString, 0), true, false, true);
             FastAddProperty("toJSON", new ClrFunctionInstance(Engine, ToJSON, 1), true, false, true);
+	        FastAddProperty("Subtract", new ClrFunctionInstance(Engine, Subtract, 0), true, false, true);
         }
+
+	    public JsValue Subtract(JsValue thisObj, JsValue[] arguments)
+	    {
+		    var date1 = EnsureDateInstance(thisObj).ToDateTime();
+			var date2 = EnsureDateInstance(arguments[0]).ToDateTime();
+		    var diff = date1.Subtract(date2);
+		    return diff.TotalMilliseconds;
+	    }
 
         private JsValue ValueOf(JsValue thisObj, JsValue[] arguments)
         {
