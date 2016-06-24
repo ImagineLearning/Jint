@@ -84,7 +84,9 @@ namespace Jint.Native.Date
 		    var date1 = EnsureDateInstance(thisObj).ToDateTime();
 			var date2 = EnsureDateInstance(arguments[0]).ToDateTime();
 		    var diff = date1.Subtract(date2);
-		    return diff.TotalMilliseconds;
+
+		    var timespan = new TimeSpanInstance(Engine, diff);
+		    return new JsValue(timespan);
 	    }
 
         private JsValue ValueOf(JsValue thisObj, JsValue[] arguments)

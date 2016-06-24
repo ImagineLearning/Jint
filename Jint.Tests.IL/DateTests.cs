@@ -1,4 +1,5 @@
 ﻿using System;
+using Jint.Native.Date;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jint.Tests.IL
@@ -24,7 +25,9 @@ namespace Jint.Tests.IL
 
 			_engine.Execute(code);
 			var result = _engine.Invoke("MethodWithSubtract");
-			Assert.AreEqual(TimeSpan.FromDays(1).TotalMilliseconds, result);
+			var timeSpanInstance = result.As<TimeSpanInstance>();
+			Assert.IsTrue(timeSpanInstance.HasOwnProperty("TotalMilliseconds"));
+			Assert.AreEqual(TimeSpan.FromDays(1).TotalMilliseconds, timeSpanInstance.GetProperty("TotalMilliseconds").Value);
 		}
 	}
 }

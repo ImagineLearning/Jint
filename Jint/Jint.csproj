@@ -48,6 +48,7 @@
     <Compile Include="Native\Boolean\BooleanPrototype.cs" />
     <Compile Include="Native\Boolean\BooleanConstructor.cs" />
     <Compile Include="Native\Boolean\BooleanInstance.cs" />
+    <Compile Include="Native\Date\TimeSpanInstance.cs" />
     <Compile Include="Native\Function\BindFunctionInstance.cs" />
     <Compile Include="Native\IPrimitiveInstance.cs" />
     <Compile Include="Native\JsValue.cs" />
@@ -205,6 +206,7 @@
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
