@@ -58,6 +58,8 @@ namespace Jint.Native.String
             FastAddProperty("toUpperCase", new ClrFunctionInstance(Engine, ToUpperCase), true, false, true);
             FastAddProperty("toLocaleUpperCase", new ClrFunctionInstance(Engine, ToLocaleUpperCase), true, false, true);
             FastAddProperty("trim", new ClrFunctionInstance(Engine, Trim), true, false, true);
+            FastAddProperty("StartsWith", new ClrFunctionInstance(Engine, StartsWith, 1), true, false, true);
+
         }
 
         private JsValue ToStringString(JsValue thisObj, JsValue[] arguments)
@@ -128,6 +130,13 @@ namespace Jint.Native.String
             TypeConverter.CheckObjectCoercible(Engine, thisObj);
             var s = TypeConverter.ToString(thisObj);
             return TrimEx(s);
+        }
+
+        private static JsValue StartsWith(JsValue thisObj, JsValue[] arguments)
+        {
+            var s = TypeConverter.ToString(thisObj);
+            var c = TypeConverter.ToString(arguments.At(0));
+            return s.StartsWith(c);
         }
         
         private static JsValue ToLocaleUpperCase(JsValue thisObj, JsValue[] arguments)
