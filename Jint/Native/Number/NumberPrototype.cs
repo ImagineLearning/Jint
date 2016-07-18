@@ -32,7 +32,8 @@ namespace Jint.Native.Number
         public void Configure()
         {
             FastAddProperty("toString", new ClrFunctionInstance(Engine, ToNumberString), true, false, true);
-            FastAddProperty("toLocaleString", new ClrFunctionInstance(Engine, ToLocaleString), true, false, true);
+			FastAddProperty("ToString", new ClrFunctionInstance(Engine, ToNumberString), true, false, true);
+			FastAddProperty("toLocaleString", new ClrFunctionInstance(Engine, ToLocaleString), true, false, true);
             FastAddProperty("valueOf", new ClrFunctionInstance(Engine, ValueOf), true, false, true);
             FastAddProperty("toFixed", new ClrFunctionInstance(Engine, ToFixed, 1), true, false, true);
             FastAddProperty("toExponential", new ClrFunctionInstance(Engine, ToExponential), true, false, true);

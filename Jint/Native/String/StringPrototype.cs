@@ -39,7 +39,8 @@ namespace Jint.Native.String
         public void Configure()
         {
             FastAddProperty("toString", new ClrFunctionInstance(Engine, ToStringString), true, false, true);
-            FastAddProperty("valueOf", new ClrFunctionInstance(Engine, ValueOf), true, false, true);
+			FastAddProperty("ToString", new ClrFunctionInstance(Engine, ToStringString), true, false, true);
+			FastAddProperty("valueOf", new ClrFunctionInstance(Engine, ValueOf), true, false, true);
             FastAddProperty("charAt", new ClrFunctionInstance(Engine, CharAt, 1), true, false, true);
             FastAddProperty("charCodeAt", new ClrFunctionInstance(Engine, CharCodeAt, 1), true, false, true);
             FastAddProperty("concat", new ClrFunctionInstance(Engine, Concat, 1), true, false, true);
