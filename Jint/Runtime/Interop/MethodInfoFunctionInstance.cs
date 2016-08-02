@@ -13,11 +13,13 @@ namespace Jint.Runtime.Interop
     public sealed class MethodInfoFunctionInstance : FunctionInstance
     {
         private readonly MethodInfo[] _methods;
+	    private Engine _engine;
 
         public MethodInfoFunctionInstance(Engine engine, MethodInfo[] methods)
             : base(engine, null, null, false)
         {
             _methods = methods;
+	        _engine = engine;
             Prototype = engine.Function.PrototypeObject;
         }
 
@@ -74,16 +76,19 @@ namespace Jint.Runtime.Interop
                     }
                     else
                     {
-                        if (!converter.TryConvert(arguments[i].ToObject(), parameterType, CultureInfo.InvariantCulture, out parameters[i]))
+						if (!converter.TryConvert(arguments[i].ToObject(), parameterType, CultureInfo.InvariantCulture, out parameters[i]))
                         {
                             argumentsMatch = false;
                             break;
                         }
-
+						_engine.LogDebug("now convert that return value to a lambda expression");
                         var lambdaExpression = parameters[i] as LambdaExpression;
-                        if (lambdaExpression != null)
-                        {
-                            parameters[i] = lambdaExpression.Compile();
+						_engine.LogDebug("sweet! it was converted");
+						if (lambdaExpression != null)
+						{
+							_engine.LogDebug("now let's see if we can call compile");
+							parameters[i] = lambdaExpression.Compile();
+							_engine.LogDebug("we totally rock because we called compile on the lambda");
 
 #if __CF__
                             var isEventHandler = !(parameterType.Name.StartsWith("Func") || parameterType.Name.StartsWith("Action"));
@@ -93,7 +98,7 @@ namespace Jint.Runtime.Interop
                                 parameters[i] = Delegate.CreateDelegate(parameterType, eventHandler.Target, eventHandler.Method);
                             }
 #endif
-                        }
+						}
                     }
                 }
 
@@ -102,11 +107,13 @@ namespace Jint.Runtime.Interop
                     continue;
                 }
 
-                // todo: cache method info
-                return JsValue.FromObject(Engine, method.Invoke(method.IsStatic ? null : thisObject.ToObject(), parameters.ToArray()));
+				// todo: cache method info
+
+				_engine.LogDebug("let's give the invoke a try shall we?");
+				return JsValue.FromObject(Engine, method.Invoke(method.IsStatic ? null : thisObject.ToObject(), parameters.ToArray()));
             }
 
-            throw new JavaScriptException(Engine.TypeError, "No public methods with the specified arguments were found.");
+			throw new JavaScriptException(Engine.TypeError, "No public methods with the specified arguments were found.");
         }
 
         /// <summary>

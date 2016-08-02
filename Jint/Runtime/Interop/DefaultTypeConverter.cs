@@ -28,8 +28,8 @@ namespace Jint.Runtime.Interop
             if (value == null)
             {
                 if (TypeConverter.TypeIsNullable(type))
-                {
-                    return null;
+				{
+					return null;
                 }
 
                 throw new NotSupportedException(string.Format("Unable to convert null to '{0}'", type.FullName));
@@ -37,13 +37,13 @@ namespace Jint.Runtime.Interop
 
             // don't try to convert if value is derived from type
             if (type.IsInstanceOfType(value))
-            {
-                return value;
+			{
+				return value;
             }
 
             if (type.IsEnum)
-            {
-                var integer = System.Convert.ChangeType(value, typeof(int), formatProvider);
+			{
+				var integer = System.Convert.ChangeType(value, typeof(int), formatProvider);
                 if (integer == null)
                 {
                     throw new ArgumentOutOfRangeException();
@@ -55,12 +55,12 @@ namespace Jint.Runtime.Interop
             var valueType = value.GetType();
             // is the javascript value an ICallable instance ?
             if (valueType == typeof(Func<JsValue, JsValue[], JsValue>))
-            {
-                var function = (Func<JsValue, JsValue[], JsValue>)value;
+			{
+				var function = (Func<JsValue, JsValue[], JsValue>)value;
 
                 if (type.IsGenericType)
                 {
-                    var genericType = type.GetGenericTypeDefinition();
+					   var genericType = type.GetGenericTypeDefinition();
 
                     // create the requested Delegate
                     if (genericType.Name.StartsWith("Action"))
@@ -166,23 +166,23 @@ namespace Jint.Runtime.Interop
 				}
                 else
                 {
-                    if (type == typeof(Action))
+					if (type == typeof(Action))
                     {
                         return (Action)(() => function(JsValue.Undefined, new JsValue[0]));
                     }
                     else if (type.IsSubclassOf(typeof(System.MulticastDelegate)))
                     {
-                        var method = type.GetMethod("Invoke");
-                        var arguments = method.GetParameters();
+	                    var method = type.GetMethod("Invoke");
+						var arguments = method.GetParameters();
 
-                        var @params = new ParameterExpression[arguments.Count()];
-                        for (var i = 0; i < @params.Count(); i++)
-                        {
-                            @params[i] = Expression.Parameter(typeof(object), arguments[i].Name);
-                        }
-                        var @vars = Expression.NewArrayInit(typeof(JsValue), @params.Select(p => Expression.Call(null, jsValueFromObject, Expression.Constant(_engine, typeof(Engine)), p)).ToArray());  // .NET 3.5 compatibility: added .ToArray()
+						var @params = new ParameterExpression[arguments.Count()];
+						for (var i = 0; i < @params.Count(); i++)
+						{
+							@params[i] = Expression.Parameter(typeof(object), arguments[i].Name);
+						}
+						var @vars = Expression.NewArrayInit(typeof(JsValue), @params.Select(p => Expression.Call(null, jsValueFromObject, Expression.Constant(_engine, typeof(Engine)), p)).ToArray());  // .NET 3.5 compatibility: added .ToArray()
 
-                        var callExpression = Expression.Block(
+						var callExpression = Expression.Block(
                                                 Expression.Call(
                                                     Expression.Call(Expression.Constant(function.Target),
                                                         function.Method,
@@ -190,10 +190,16 @@ namespace Jint.Runtime.Interop
                                                         @vars),
                                                     jsValueToObject),
                                                 Expression.Empty());
+					
+	                    var lambda = Expression.Lambda<Action<object, object>>(callExpression, @params);
 
-                        var dynamicExpression = Expression.Invoke(Expression.Lambda(callExpression, @params), @params);
+						var dynamicExpression = Expression.Invoke(lambda, @params);
 
-                        return Expression.Lambda(type, dynamicExpression, @params); // .NET 3.5 compatibility: removed ReadOnlyCollection<> maybe also push change to MASTER
+						_engine.LogDebug("trying to create a lambda");
+	                    var lambda2 = Expression.Lambda<EventHandler>(dynamicExpression, @params);
+						_engine.LogDebug("We actually created a lambda");
+						//var lambda3 = Expression.Lambda(type, dynamicExpression, @params); // .NET 3.5 compatibility: removed ReadOnlyCollection<> maybe also push change to MASTER
+	                    return lambda2;
                     }
                 }
             }
@@ -227,13 +233,17 @@ namespace Jint.Runtime.Interop
                     {
                         try
                         {
+	                        _engine.LogDebug("DefaultTypeConverter:TryConvert calling convert");
                             converted = Convert(value, type, formatProvider);
                             _knownConversions.Add(key, true);
                             return true;
                         }
-                        catch
+                        catch (Exception e)
                         {
-                            converted = null;
+							_engine.LogError("Exception thrown while converting, message: " + e.Message);
+							_engine.LogError("Exception type: " + e.GetType());
+							_engine.LogError("------Stack Trace: " + e.StackTrace);
+							converted = null;
                             _knownConversions.Add(key, false);
                             return false;
                         }

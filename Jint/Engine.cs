@@ -28,150 +28,197 @@ namespace Jint
 {
     using Jint.Runtime.CallStack;
 
-    public class Engine
-    {
-        private readonly ExpressionInterpreter _expressions;
-        private readonly StatementInterpreter _statements;
-        private readonly Stack<ExecutionContext> _executionContexts;
-        private JsValue _completionValue = JsValue.Undefined;
-        private int _statementsCount;
-        private long _timeoutTicks;
-        private SyntaxNode _lastSyntaxNode = null;
-        
-        public ITypeConverter ClrTypeConverter;
+	public class Engine
+	{
+		private readonly ExpressionInterpreter _expressions;
+		private readonly StatementInterpreter _statements;
+		private readonly Stack<ExecutionContext> _executionContexts;
+		private JsValue _completionValue = JsValue.Undefined;
+		private int _statementsCount;
+		private long _timeoutTicks;
+		private SyntaxNode _lastSyntaxNode = null;
 
-        // cache of types used when resolving CLR type names
-        internal Dictionary<string, Type> TypeCache = new Dictionary<string, Type>();
+		public ITypeConverter ClrTypeConverter;
 
-        internal JintCallStack CallStack = new JintCallStack();
+		// cache of types used when resolving CLR type names
+		internal Dictionary<string, Type> TypeCache = new Dictionary<string, Type>();
 
-        public Engine() : this(null)
-        {
-        }
+		internal JintCallStack CallStack = new JintCallStack();
 
-        public Engine(Action<Options> options)
-        {
-            _executionContexts = new Stack<ExecutionContext>();
+		public Engine() : this(null)
+		{
+		}
 
-            Global = GlobalObject.CreateGlobalObject(this);
+		public Engine(Action<Options> options)
+		{
+			_executionContexts = new Stack<ExecutionContext>();
 
-            Object = ObjectConstructor.CreateObjectConstructor(this);
-            Function = FunctionConstructor.CreateFunctionConstructor(this);
+			Global = GlobalObject.CreateGlobalObject(this);
 
-            Array = ArrayConstructor.CreateArrayConstructor(this);
-            String = StringConstructor.CreateStringConstructor(this);
-            RegExp = RegExpConstructor.CreateRegExpConstructor(this);
-            Number = NumberConstructor.CreateNumberConstructor(this);
-            Boolean = BooleanConstructor.CreateBooleanConstructor(this);
-            Date = DateConstructor.CreateDateConstructor(this);
-            Math = MathInstance.CreateMathObject(this);
-            Json = JsonInstance.CreateJsonObject(this);
+			Object = ObjectConstructor.CreateObjectConstructor(this);
+			Function = FunctionConstructor.CreateFunctionConstructor(this);
 
-            Error = ErrorConstructor.CreateErrorConstructor(this, "Error");
-            EvalError = ErrorConstructor.CreateErrorConstructor(this, "EvalError");
-            RangeError = ErrorConstructor.CreateErrorConstructor(this, "RangeError");
-            ReferenceError = ErrorConstructor.CreateErrorConstructor(this, "ReferenceError");
-            SyntaxError = ErrorConstructor.CreateErrorConstructor(this, "SyntaxError");
-            TypeError = ErrorConstructor.CreateErrorConstructor(this, "TypeError");
-            UriError = ErrorConstructor.CreateErrorConstructor(this, "URIError");
+			Array = ArrayConstructor.CreateArrayConstructor(this);
+			String = StringConstructor.CreateStringConstructor(this);
+			RegExp = RegExpConstructor.CreateRegExpConstructor(this);
+			Number = NumberConstructor.CreateNumberConstructor(this);
+			Boolean = BooleanConstructor.CreateBooleanConstructor(this);
+			Date = DateConstructor.CreateDateConstructor(this);
+			Math = MathInstance.CreateMathObject(this);
+			Json = JsonInstance.CreateJsonObject(this);
 
-            // Because the properties might need some of the built-in object
-            // their configuration is delayed to a later step
+			Error = ErrorConstructor.CreateErrorConstructor(this, "Error");
+			EvalError = ErrorConstructor.CreateErrorConstructor(this, "EvalError");
+			RangeError = ErrorConstructor.CreateErrorConstructor(this, "RangeError");
+			ReferenceError = ErrorConstructor.CreateErrorConstructor(this, "ReferenceError");
+			SyntaxError = ErrorConstructor.CreateErrorConstructor(this, "SyntaxError");
+			TypeError = ErrorConstructor.CreateErrorConstructor(this, "TypeError");
+			UriError = ErrorConstructor.CreateErrorConstructor(this, "URIError");
 
-            Global.Configure();
+			// Because the properties might need some of the built-in object
+			// their configuration is delayed to a later step
 
-            Object.Configure();
-            Object.PrototypeObject.Configure();
+			Global.Configure();
 
-            Function.Configure();
-            Function.PrototypeObject.Configure();
+			Object.Configure();
+			Object.PrototypeObject.Configure();
 
-            Array.Configure();
-            Array.PrototypeObject.Configure();
+			Function.Configure();
+			Function.PrototypeObject.Configure();
 
-            String.Configure();
-            String.PrototypeObject.Configure();
+			Array.Configure();
+			Array.PrototypeObject.Configure();
 
-            RegExp.Configure();
-            RegExp.PrototypeObject.Configure();
+			String.Configure();
+			String.PrototypeObject.Configure();
 
-            Number.Configure();
-            Number.PrototypeObject.Configure();
+			RegExp.Configure();
+			RegExp.PrototypeObject.Configure();
 
-            Boolean.Configure();
-            Boolean.PrototypeObject.Configure();
+			Number.Configure();
+			Number.PrototypeObject.Configure();
 
-            Date.Configure();
-            Date.PrototypeObject.Configure();
+			Boolean.Configure();
+			Boolean.PrototypeObject.Configure();
 
-            Math.Configure();
-            Json.Configure();
+			Date.Configure();
+			Date.PrototypeObject.Configure();
 
-            Error.Configure();
-            Error.PrototypeObject.Configure();
+			Math.Configure();
+			Json.Configure();
 
-            // create the global environment http://www.ecma-international.org/ecma-262/5.1/#sec-10.2.3
-            GlobalEnvironment = LexicalEnvironment.NewObjectEnvironment(this, Global, null, false);
-            
-            // create the global execution context http://www.ecma-international.org/ecma-262/5.1/#sec-10.4.1.1
-            EnterExecutionContext(GlobalEnvironment, GlobalEnvironment, Global);
+			Error.Configure();
+			Error.PrototypeObject.Configure();
 
-            Options = new Options();
+			// create the global environment http://www.ecma-international.org/ecma-262/5.1/#sec-10.2.3
+			GlobalEnvironment = LexicalEnvironment.NewObjectEnvironment(this, Global, null, false);
 
-            if (options != null)
-            {
-                options(Options);
-            }
+			// create the global execution context http://www.ecma-international.org/ecma-262/5.1/#sec-10.4.1.1
+			EnterExecutionContext(GlobalEnvironment, GlobalEnvironment, Global);
 
-            Eval = new EvalFunctionInstance(this, new string[0], LexicalEnvironment.NewDeclarativeEnvironment(this, ExecutionContext.LexicalEnvironment), StrictModeScope.IsStrictModeCode);
-            Global.FastAddProperty("eval", Eval, true, false, true);
+			Options = new Options();
 
-            _statements = new StatementInterpreter(this);
-            _expressions = new ExpressionInterpreter(this);
+			if (options != null)
+			{
+				options(Options);
+			}
 
-            if (Options.IsClrAllowed())
-            {
-                Global.FastAddProperty("System", new NamespaceReference(this, "System"), false, false, false);
-                Global.FastAddProperty("importNamespace", new ClrFunctionInstance(this, (thisObj, arguments) =>
-                {
-                    return new NamespaceReference(this, TypeConverter.ToString(arguments.At(0)));
-                }), false, false, false);
-            }
+			Eval = new EvalFunctionInstance(this, new string[0],
+				LexicalEnvironment.NewDeclarativeEnvironment(this, ExecutionContext.LexicalEnvironment),
+				StrictModeScope.IsStrictModeCode);
+			Global.FastAddProperty("eval", Eval, true, false, true);
 
-            ClrTypeConverter = new DefaultTypeConverter(this);
-            BreakPoints = new List<BreakPoint>();
-            DebugHandler = new DebugHandler(this);
-        }
+			_statements = new StatementInterpreter(this);
+			_expressions = new ExpressionInterpreter(this);
 
-        public LexicalEnvironment GlobalEnvironment;
+			if (Options.IsClrAllowed())
+			{
+				Global.FastAddProperty("System", new NamespaceReference(this, "System"), false, false, false);
+				Global.FastAddProperty("importNamespace", new ClrFunctionInstance(this, (thisObj, arguments) =>
+				{
+					return new NamespaceReference(this, TypeConverter.ToString(arguments.At(0)));
+				}), false, false, false);
+			}
 
-        public GlobalObject Global { get; private set; }
-        public ObjectConstructor Object { get; private set; }
-        public FunctionConstructor Function { get; private set; }
-        public ArrayConstructor Array { get; private set; }
-        public StringConstructor String { get; private set; }
-        public RegExpConstructor RegExp { get; private set; }
-        public BooleanConstructor Boolean { get; private set; }
-        public NumberConstructor Number { get; private set; }
-        public DateConstructor Date { get; private set; }
-        public MathInstance Math { get; private set; }
-        public JsonInstance Json { get; private set; }
-        public EvalFunctionInstance Eval { get; private set; }
+			ClrTypeConverter = new DefaultTypeConverter(this);
+			BreakPoints = new List<BreakPoint>();
+			DebugHandler = new DebugHandler(this);
+		}
 
-        public ErrorConstructor Error { get; private set; }
-        public ErrorConstructor EvalError { get; private set; }
-        public ErrorConstructor SyntaxError { get; private set; }
-        public ErrorConstructor TypeError { get; private set; }
-        public ErrorConstructor RangeError { get; private set; }
-        public ErrorConstructor ReferenceError { get; private set; }
-        public ErrorConstructor UriError { get; private set; }
+		public LexicalEnvironment GlobalEnvironment;
 
-        public ExecutionContext ExecutionContext { get { return _executionContexts.Peek(); } }
+		public GlobalObject Global { get; private set; }
+		public ObjectConstructor Object { get; private set; }
+		public FunctionConstructor Function { get; private set; }
+		public ArrayConstructor Array { get; private set; }
+		public StringConstructor String { get; private set; }
+		public RegExpConstructor RegExp { get; private set; }
+		public BooleanConstructor Boolean { get; private set; }
+		public NumberConstructor Number { get; private set; }
+		public DateConstructor Date { get; private set; }
+		public MathInstance Math { get; private set; }
+		public JsonInstance Json { get; private set; }
+		public EvalFunctionInstance Eval { get; private set; }
 
-        internal Options Options { get; private set; }
-        
-        #region Debugger
-        public delegate StepMode DebugStepDelegate(object sender, DebugInformation e);
+		public ErrorConstructor Error { get; private set; }
+		public ErrorConstructor EvalError { get; private set; }
+		public ErrorConstructor SyntaxError { get; private set; }
+		public ErrorConstructor TypeError { get; private set; }
+		public ErrorConstructor RangeError { get; private set; }
+		public ErrorConstructor ReferenceError { get; private set; }
+		public ErrorConstructor UriError { get; private set; }
+
+		public ExecutionContext ExecutionContext
+		{
+			get { return _executionContexts.Peek(); }
+		}
+
+		internal Options Options { get; private set; }
+
+		#region Logging
+
+		private EventHandler<LoggingEventArgs> _debugLogged;
+
+		public event EventHandler<LoggingEventArgs> DebugLogged
+		{
+			add { _debugLogged += value; }
+			remove { _debugLogged -= value; }
+		}
+
+		private EventHandler<LoggingEventArgs> _errorLogged;
+
+		public event EventHandler<LoggingEventArgs> ErrorLogged
+		{
+			add { _errorLogged += value; }
+			remove { _errorLogged -= value; }
+		}
+
+		private EventHandler<LoggingEventArgs> _warningLogged;
+
+		public event EventHandler<LoggingEventArgs> WarningLogged
+		{
+			add { _warningLogged += value; }
+			remove { _warningLogged -= value; }
+		}
+
+		public void LogDebug(string message)
+		{
+			_debugLogged?.Invoke(this, new LoggingEventArgs() {Message = message});
+		}
+
+		public void LogError(string message)
+		{
+			_errorLogged?.Invoke(this, new LoggingEventArgs() { Message = message });
+		}
+
+		public void LogWarning(string message)
+		{
+			_warningLogged?.Invoke(this, new LoggingEventArgs() { Message = message });
+		}
+
+		#endregion
+		#region Debugger
+		public delegate StepMode DebugStepDelegate(object sender, DebugInformation e);
         public delegate StepMode BreakDelegate(object sender, DebugInformation e);
         public event DebugStepDelegate Step;
         public event BreakDelegate Break;
@@ -806,4 +853,9 @@ namespace Jint
             }
         }
     }
+
+	public class LoggingEventArgs : EventArgs
+	{
+		public string Message { get; set; }
+	}
 }
